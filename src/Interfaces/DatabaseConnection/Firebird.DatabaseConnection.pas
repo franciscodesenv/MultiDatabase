@@ -1,26 +1,23 @@
-unit MySQL.DatabaseConnection;
+unit Firebird.DatabaseConnection;
 
 interface
+
 uses
-    System.SysUtils, FireDAC.Phys.MySQL,
-    FireDAC.Phys.Intf, FireDAC.UI.Intf, FireDAC.Stan.ASync,
+    System.SysUtils, FireDAC.Phys.FB,
     Intf.DatabaseConnection, Impl.DatabaseConnection,
     Intf.DatabaseConfig, Impl.DatabaseConfig;
 type
-    TMySQLConnection = class(TDatabaseConnection)
-    private
-        FMySQLDriver: TFDPhysMySQLDriverLink;
+    TFBConnection = class(TDatabaseConnection)
     public
         constructor Create(Config: IDatabaseConfig); override;
-        destructor Destroy; override;
         function Connect: Boolean; override;
     end;
 
 implementation
 
-{ TMySQLConnection }
+{ TFBConnection }
 
-function TMySQLConnection.Connect: Boolean;
+function TFBConnection.Connect: Boolean;
 begin
     try
         Connection.Params.Clear;
@@ -28,13 +25,16 @@ begin
             Connection.ConnectionString := Config.ConnectionString
         else
         begin
+            Connection.Params.Clear;
+            Connection.Params.DriverID := 'FB';
             Connection.Params.Values['Server'] := Config.Server;
             Connection.Params.Values['Port'] := Config.Port.ToString;
             Connection.Params.Values['User_name'] := Config.Username;
             Connection.Params.Values['Password'] := Config.Password;
             Connection.Params.Values['Database'] := Config.Database;
+//            Connection.Params.Values['Protocol'] := Params.Protocol;
         end;
-        Connection.DriverName := 'MySQL';
+        Connection.DriverName := 'FB';
         Connection.LoginPrompt := False;
         Connection.Connected := True;
         Result := Connection.Connected;
@@ -46,20 +46,9 @@ begin
     end;
 end;
 
-constructor TMySQLConnection.Create(Config: IDatabaseConfig);
+constructor TFBConnection.Create(Config: IDatabaseConfig);
 begin
     inherited Create(Config);
-    FMySQLDriver := TFDPhysMySQLDriverLink.Create(nil);
-    FMySQLDriver.VendorLib := ExtractFilePath(ParamStr(0)) + 'libmysql.dll';
-end;
-
-destructor TMySQLConnection.Destroy;
-begin
-    if Assigned(FMySQLDriver) then
-    begin
-        FMySQLDriver.Free;
-    end;
-    inherited;
 end;
 
 end.

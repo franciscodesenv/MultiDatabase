@@ -12,6 +12,8 @@ type
         function Password: String; overload;
         function DriverId: String; overload;
         function ConnectionString: String; overload;
+        function OSAuthMSSQL: Boolean; overload;
+        function UseConnectionString: Boolean; overload;
         {setters}
         function Server(Value: String): IDatabaseConfig; overload;
         function Database(Value: String): IDatabaseConfig; overload;
@@ -20,10 +22,13 @@ type
         function Password(Value: String): IDatabaseConfig; overload;
         function DriverId(Value: String): IDatabaseConfig; overload;
         function ConnectionString(Value: String): IDatabaseConfig; overload;
+        function OSAuthMSSQL(Value: Boolean): IDatabaseConfig; overload;
+        function UseConnectionString(Value: Boolean): IDatabaseConfig; overload;
         {methods}
         function ToJSON: String;
         function Default: IDatabaseConfig;
         function Clear: IDatabaseConfig;
+        procedure CopyFrom(const Source: IDatabaseConfig);
     end;
 
 implementation

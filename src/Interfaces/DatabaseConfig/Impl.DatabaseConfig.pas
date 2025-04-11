@@ -13,6 +13,8 @@ type
         FPassword: String;
         FDriverID: String;
         FConnectionString: String;
+        FOSAuthMSSQL: Boolean;
+        FUseConnectionString: Boolean;
     public
         constructor Create; virtual;
         destructor Destroy; override;
@@ -24,6 +26,8 @@ type
         function Password: String; overload; virtual;
         function DriverId: String; overload; virtual;
         function ConnectionString: String; overload; virtual;
+        function OSAuthMSSQL: Boolean; overload;
+        function UseConnectionString: Boolean; overload;
         {setters}
         function Server(Value: String): IDatabaseConfig; overload;
         function Database(Value: String): IDatabaseConfig; overload;
@@ -32,10 +36,13 @@ type
         function Password(Value: String): IDatabaseConfig; overload;
         function DriverId(Value: String): IDatabaseConfig; overload;
         function ConnectionString(Value: String): IDatabaseConfig; overload;
+        function OSAuthMSSQL(Value: Boolean): IDatabaseConfig; overload;
+        function UseConnectionString(Value: Boolean): IDatabaseConfig; overload;
         {methods}
         function ToJSON: String;
         function Default: IDatabaseConfig; virtual;
         function Clear: IDatabaseConfig;
+        procedure CopyFrom(const Source: IDatabaseConfig);
     end;
 
 implementation
@@ -52,6 +59,7 @@ begin
     FUsername := '';
     FPassword := '';
     FDriverID := '';
+    FOSAuthMSSQL := False;
 end;
 
 function TDatabaseConnectionConfig.ConnectionString(
@@ -59,6 +67,21 @@ function TDatabaseConnectionConfig.ConnectionString(
 begin
     Result := Self;
     FConnectionString := Value.Trim;
+end;
+
+procedure TDatabaseConnectionConfig.CopyFrom(const Source: IDatabaseConfig);
+begin
+    if Assigned(Source) then
+    begin
+        Self.FServer := Source.Server;
+        Self.FDatabase := Source.Database;
+        Self.FPort := Source.Port;
+        Self.FUsername := Source.Username;
+        Self.FPassword := Source.Password;
+        Self.FDriverID := Source.DriverId;
+        Self.FOSAuthMSSQL := Source.OSAuthMSSQL;
+        Self.FUseConnectionString := Source.UseConnectionString;
+    end;
 end;
 
 constructor TDatabaseConnectionConfig.Create;
@@ -113,6 +136,17 @@ function TDatabaseConnectionConfig.DriverId(
 begin
     Result := Self;
     FDriverID := Value.Trim;
+end;
+
+function TDatabaseConnectionConfig.OSAuthMSSQL(Value: Boolean): IDatabaseConfig;
+begin
+    Result := Self;
+    FOSAuthMSSQL := Value;
+end;
+
+function TDatabaseConnectionConfig.OSAuthMSSQL: Boolean;
+begin
+    Result := FOSAuthMSSQL;
 end;
 
 function TDatabaseConnectionConfig.Password: String;
@@ -172,6 +206,18 @@ end;
 function TDatabaseConnectionConfig.Username: String;
 begin
     Result := FUsername.Trim
+end;
+
+function TDatabaseConnectionConfig.UseConnectionString(
+  Value: Boolean): IDatabaseConfig;
+begin
+    Result := Self;
+    FUseConnectionString := Value;
+end;
+
+function TDatabaseConnectionConfig.UseConnectionString: Boolean;
+begin
+    Result := FUseConnectionString;
 end;
 
 function TDatabaseConnectionConfig.Username(

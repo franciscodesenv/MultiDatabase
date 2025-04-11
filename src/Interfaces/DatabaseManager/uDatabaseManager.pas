@@ -4,9 +4,12 @@ interface
 uses
     System.SysUtils, System.Classes, Data.DB, Intf.DatabaseConnection,
     Intf.DatabaseConfig, Intf.Connection.Factory,
-    MySQL.Connection.Factory, MySQL.DatabaseConfig;
+    MySQL.Connection.Factory, MySQL.DatabaseConfig,
+    MSSQL.Connection.Factory, MSSQL.DatabaseConfig,
+    Firebird.Connection.Factory, Firebird.DatabaseConfig,
+    Postgre.Connection.Factory, Postgre.DatabaseConfig;
 type
-    TDatabaseType = (dbtMySQL, dbtSQLite, dbtMSSQL, dbtPostgreSQL, dbtOracle);
+    TDatabaseType = (dbtMySQL, dbtSQLite, dbtMSSQL, dbtPostgreSQL, dbtOracle, dbtFirebird);
     TDatabaseManager = class
     private
         FConnection: IDatabaseConnection;
@@ -19,8 +22,9 @@ type
         constructor Create(DatabaseType: TDatabaseType);
         destructor Destroy; override;
 
-        procedure SetConnectionParams(const Server, Database, Username, Password: string; Port: Integer = 0);
+        procedure SetConnectionParams(const Server, Database, Username, Password: string; Port: Integer = 0; OSAuthentMSSQL: Boolean = False); overload;
         procedure SetConnectionString(const ConnectionString: string);
+        procedure SetConnectionParams(Config: IDatabaseConfig); overload;
         procedure ChangeDatabase(DatabaseType: TDatabaseType);
 
         function Connect: Boolean;
@@ -63,9 +67,10 @@ begin
   case DatabaseType of
     dbtMySQL: Result := TMySQLConnectionFactory.Create;
 //    dbtSQLite: Result := TSQLiteConnectionFactory.Create;
-//    dbtMSSQL: Result := TMSSQLConnectionFactory.Create;
-//    dbtPostgreSQL: Result := TPostgreSQLConnectionFactory.Create;
+    dbtMSSQL: Result := TMSSQLConnectionFactory.Create;
+    dbtPostgreSQL: Result := TPGConnectionFactory.Create;
 //    dbtOracle: Result := TOracleConnectionFactory.Create;
+    dbtFirebird: Result := TFBConnectionFactory.Create;
   else
     raise Exception.Create('Tipo de banco de dados não suportado');
   end;
@@ -76,22 +81,29 @@ begin
     case DatabaseType of
         dbtMySQL: Result := TMySQLConnectionConfig.Create;
     //    dbtSQLite: Result := TSQLiteConnectionConfig.Create;
-    //    dbtMSSQL: Result := TMSSQLConnectionConfig.Create;
-    //    dbtPostgreSQL: Result := TPostgreSQLConnectionConfig.Create;
+        dbtMSSQL: Result := TMSSQLConnectionConfig.Create;
+        dbtPostgreSQL: Result := TPGConnectionConfig.Create;
     //    dbtOracle: Result := TOracleConnectionConfig.Create;
+        dbtFirebird: Result := TFBConnectionConfig.Create;
     else
         raise Exception.Create('Tipo de banco de dados não suportado');
     end;
 end;
 
-procedure TDatabaseManager.SetConnectionParams(const Server, Database, Username, Password: string; Port: Integer);
+procedure TDatabaseManager.SetConnectionParams(const Server, Database, Username, Password: string; Port: Integer = 0; OSAuthentMSSQL: Boolean = False);
 begin
     FConfig.Server(Server);
     FConfig.Database(Database);
     FConfig.Username(Username);
     FConfig.Password(Password);
+    FCOnfig.OSAuthMSSQL(OSAuthentMSSQL);
     if Port > 0 then
         FConfig.Port(Port);
+end;
+
+procedure TDatabaseManager.SetConnectionParams(Config: IDatabaseConfig);
+begin
+    FConfig.CopyFrom(Config);
 end;
 
 procedure TDatabaseManager.SetConnectionString(const ConnectionString: string);

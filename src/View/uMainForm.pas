@@ -6,7 +6,6 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Data.DB, uDatabaseManager,
   Vcl.ComCtrls, Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids;
-
 type
   TForm1 = class(TForm)
     cmb_sgdb: TComboBox;
@@ -24,6 +23,8 @@ type
     Label1: TLabel;
     Button2: TButton;
     ed_database: TLabeledEdit;
+    chkUsarAutWindows: TCheckBox;
+    chkUseConnectionStr: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure cmb_sgdbChange(Sender: TObject);
     procedure btn_connectClick(Sender: TObject);
@@ -47,16 +48,28 @@ var
 
 implementation
 
+uses
+    Intf.DatabaseConfig, Impl.DatabaseConfig;
+
 {$R *.dfm}
 
 procedure TForm1.btn_connectClick(Sender: TObject);
 var
     port: Integer;
+    config: IDatabaseConfig;
 begin
-    if TryStrToInt(ed_port.Text, Port) then
-        FDBManager.SetConnectionParams(ed_server.Text, ed_database.Text, ed_username.Text, ed_password.Text, port)
-    else
-        FDBManager.SetConnectionParams(ed_server.Text, ed_database.Text, ed_username.Text, ed_password.Text);
+    port := 0;
+    TryStrToInt(ed_port.Text, Port);
+    config := TDatabaseConnectionConfig.Create;
+    config
+        .Server(ed_server.Text)
+        .Database(ed_database.Text)
+        .Port(port)
+        .Username(ed_username.Text)
+        .Password(ed_password.Text)
+        .OSAuthMSSQL(chkUsarAutWindows.Checked)
+        .UseConnectionString(chkUseConnectionStr.Checked);
+    FDBManager.SetConnectionParams(config);
     if FDBManager.Connect then
     begin
         ShowMessage('Conexão bem-sucedida!');
@@ -148,16 +161,21 @@ begin
         2: DBType := dbtMSSQL;
         3: DBType := dbtPostgreSQL;
         4: DBType := dbtOracle;
+        5: DBType := dbtFirebird;
     else
         DBType := dbtMySQL;
     end;
-  FDBManager.ChangeDatabase(DBType);
-
+    FDBManager.ChangeDatabase(DBType);
+    chkUsarAutWindows.Checked := False;
+    chkUsarAutWindows.Enabled := False;
     // Ajusta a UI com valores padrão para cada tipo de banco
     case DBType of
         dbtMySQL:
             begin
                 ed_port.Text := '3306';
+                ed_server.Text := '127.0.0.1';
+                ed_username.Text := 'root';
+                ed_password.Text := '123456';
             end;
         dbtSQLite:
             begin
@@ -169,14 +187,32 @@ begin
         dbtMSSQL:
             begin
                 ed_port.Text := '1433';
+                ed_server.Text := 'DEVELOPMENT\SQLEXPRESS';
+                ed_database.Text := 'teste';
+                chkUsarAutWindows.Visible := True;
+                chkUsarAutWindows.Enabled := True;
+                chkUsarAutWindows.Checked := True;
             end;
         dbtPostgreSQL:
             begin
                 ed_port.Text := '5432';
+                ed_server.Text := '127.0.0.1';
+                ed_username.Text := 'postgres';
+                ed_password.Text := '123456';
+                ed_database.Text := 'postgres';
             end;
         dbtOracle:
             begin
                 ed_port.Text := '1521';
+                ed_server.Text := '127.0.0.1';
+            end;
+        dbtFirebird:
+            begin
+                ed_port.Text := '3050';
+                ed_server.Text := '127.0.0.1';
+                ed_username.Text := 'sysdba';
+                ed_password.Text := 'masterkey';
+                ed_database.Text := ExtractFilePath(ParamStr(0)) + 'DADOS.FDB';
             end;
     end;
 end;
@@ -189,6 +225,7 @@ begin
     cmb_sgdb.Items.Add('SQL Server');
     cmb_sgdb.Items.Add('PostgreSQL');
     cmb_sgdb.Items.Add('Oracle');
+    cmb_sgdb.Items.Add('Firebird');
     cmb_sgdb.ItemIndex := 0;
     ds := TDataSource.Create(Self);
     DBGrid1.DataSource := ds;

@@ -76,7 +76,6 @@ begin
     FConnection := TFDConnection.Create(nil);
     FConnection.LoginPrompt := False;
     FWaitCursor := TFDGUIxWaitCursor.Create(nil);
-//    FConnection.BeforeConnect := Self.FConnectionBeforeConnect;
 end;
 
 function TDatabaseConnection.CreateParameter(const Name: string;

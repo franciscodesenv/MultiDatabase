@@ -5,6 +5,7 @@ uses
     Intf.DatabaseConfig, Impl.DatabaseConfig, SysUtils;
 type
     TMSSQLConnectionConfig = class(TDatabaseConnectionConfig)
+    private
     public
         constructor Create; override;
         function ConnectionString: string; override;
@@ -17,19 +18,18 @@ implementation
 constructor TMSSQLConnectionConfig.Create;
 begin
     inherited;
-    Self.DriverId('MySQL');
-    Self.Port(3306);
+    Self.DriverId('MSSQL');
+    Self.Port(1433);
 end;
 
 function TMSSQLConnectionConfig.ConnectionString: string;
 var
-    s: String;
+    osauth: String;
 begin
-    s := inherited ConnectionString;
-    if s <> '' then
-        Result := s
-    else
-        Result := Format('DriverID=MySQL;Server=%s;Port=%d;Database=%s;User_Name=%s;Password=%s', [Server, Port, Database, Username, Password]);
+    osauth := 'N';
+    if Self.OSAuthMSSQL then
+        osauth := 'S';
+    Result := Format('DriverID=MSSQL;Server=%s;Port=%d;Database=%s;User_Name=%s;Password=%s;OSAuthent=%s;MARS=No;Trusted_Connection=False', [Server, Port, Database, Username, Password, osauth]);
 end;
 
 end.

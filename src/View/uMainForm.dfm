@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 0
   Caption = 'Form1'
   ClientHeight = 544
-  ClientWidth = 635
+  ClientWidth = 786
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,7 +15,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   DesignSize = (
-    635
+    786
     544)
   PixelsPerInch = 96
   TextHeight = 13
@@ -37,11 +37,10 @@ object Form1: TForm1
   object StatusBar1: TStatusBar
     Left = 0
     Top = 525
-    Width = 635
+    Width = 786
     Height = 19
     Panels = <>
     SimplePanel = True
-    ExplicitTop = 418
   end
   object ed_port: TLabeledEdit
     Left = 135
@@ -108,7 +107,7 @@ object Form1: TForm1
   object memoSQL: TMemo
     Left = 8
     Top = 257
-    Width = 248
+    Width = 330
     Height = 167
     Anchors = [akLeft, akTop, akBottom]
     TabOrder = 8
@@ -116,16 +115,15 @@ object Form1: TForm1
   object Memo1: TMemo
     Left = 8
     Top = 430
-    Width = 619
+    Width = 770
     Height = 89
     Anchors = [akLeft, akRight, akBottom]
     TabOrder = 9
-    ExplicitTop = 323
   end
   object DBGrid1: TDBGrid
-    Left = 272
+    Left = 344
     Top = 16
-    Width = 355
+    Width = 434
     Height = 408
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 10
@@ -163,5 +161,25 @@ object Form1: TForm1
     EditLabel.Caption = 'Database'
     TabOrder = 13
     Text = 'tk2000'
+  end
+  object chkUsarAutWindows: TCheckBox
+    Left = 159
+    Top = 10
+    Width = 167
+    Height = 17
+    Hint = 
+      'Usar autentica'#231#227'o do Windows|Esta op'#231#227'o s'#243' '#233' v'#225'lida para conex'#227'o' +
+      ' com SQL Server.'
+    Caption = 'Usar autentica'#231#227'o do Windows'
+    TabOrder = 14
+  end
+  object chkUseConnectionStr: TCheckBox
+    Left = 159
+    Top = 34
+    Width = 130
+    Height = 17
+    Hint = 'Usar ConnectionString'
+    Caption = 'Usar ConnectionString'
+    TabOrder = 15
   end
 end
