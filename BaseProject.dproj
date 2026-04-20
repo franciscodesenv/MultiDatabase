@@ -118,6 +118,12 @@
         <DCCReference Include="src\Interfaces\DatabaseConnection\MSSQL.DatabaseConnection.pas"/>
         <DCCReference Include="src\Interfaces\DatabaseConfig\MSSQL.DatabaseConfig.pas"/>
         <DCCReference Include="src\Interfaces\DatabaseConnectionFactory\MSSQL.Connection.Factory.pas"/>
+        <DCCReference Include="src\Interfaces\DatabaseConfig\Firebird.DatabaseConfig.pas"/>
+        <DCCReference Include="src\Interfaces\DatabaseConnection\Firebird.DatabaseConnection.pas"/>
+        <DCCReference Include="src\Interfaces\DatabaseConnectionFactory\Firebird.Connection.Factory.pas"/>
+        <DCCReference Include="src\Interfaces\DatabaseConnection\Postgre.DatabaseConnection.pas"/>
+        <DCCReference Include="src\Interfaces\DatabaseConfig\Postgre.DatabaseConfig.pas"/>
+        <DCCReference Include="src\Interfaces\DatabaseConnectionFactory\Postgre.Connection.Factory.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -140,7 +146,7 @@
                 </Source>
             </Delphi.Personality>
             <Deployment Version="3">
-                <DeployFile LocalName="Win32\Debug\BaseProject.exe" Configuration="Debug" Class="ProjectOutput">
+                <DeployFile LocalName="bin\Win32\Debug\BaseProject.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>BaseProject.exe</RemoteName>
                         <Overwrite>true</Overwrite>

@@ -14,7 +14,13 @@ uses
   uDatabaseManager in 'src\Interfaces\DatabaseManager\uDatabaseManager.pas',
   MSSQL.DatabaseConnection in 'src\Interfaces\DatabaseConnection\MSSQL.DatabaseConnection.pas',
   MSSQL.DatabaseConfig in 'src\Interfaces\DatabaseConfig\MSSQL.DatabaseConfig.pas',
-  MSSQL.Connection.Factory in 'src\Interfaces\DatabaseConnectionFactory\MSSQL.Connection.Factory.pas';
+  MSSQL.Connection.Factory in 'src\Interfaces\DatabaseConnectionFactory\MSSQL.Connection.Factory.pas',
+  Firebird.DatabaseConfig in 'src\Interfaces\DatabaseConfig\Firebird.DatabaseConfig.pas',
+  Firebird.DatabaseConnection in 'src\Interfaces\DatabaseConnection\Firebird.DatabaseConnection.pas',
+  Firebird.Connection.Factory in 'src\Interfaces\DatabaseConnectionFactory\Firebird.Connection.Factory.pas',
+  Postgre.DatabaseConnection in 'src\Interfaces\DatabaseConnection\Postgre.DatabaseConnection.pas',
+  Postgre.DatabaseConfig in 'src\Interfaces\DatabaseConfig\Postgre.DatabaseConfig.pas',
+  Postgre.Connection.Factory in 'src\Interfaces\DatabaseConnectionFactory\Postgre.Connection.Factory.pas';
 
 {$R *.res}
 
